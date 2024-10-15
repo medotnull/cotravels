@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
 import  ApiCall  from './Services/ApiCall';
+// import UseValidation from './Hooks/UseValidation';
+import { 
+  validate_username, 
+  validate_password, 
+  validate_name, 
+  validate_gender, 
+  validate_phone_number, 
+  validate_date_of_birth, 
+  validate_country, 
+  validate_state, 
+  validate_city,
+  validate_email
+} from './Hooks/UseValidation';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -15,7 +28,28 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // cosnt [values, setValues] = useState({
+  //   name:'',
+  //   username:'',
+  //   email:'',
+  //   dateOfBirth:'',
+  //   gender:'',
+  //   phoneNumber:'',
+  //   city:'',
+  //   state:'',
+  //   country:'',
+  //   password:'',
+  // });
 
+  const [errors, setErrors] = useState({})
+  // const handleInput = (e) {
+  //   const newObj = {...values, [e.target.name]: e.target.value}
+  //   setValues(newObj)
+  // }
+  // const handleValidation = (e) {
+  //   e.preventDefault();
+  //   setErrors(UseValidation(values));
+  //}
   const handleSubmit = async(e) => {
     e.preventDefault();
     const formData = {
@@ -31,6 +65,29 @@ const Signup = () => {
       password,
       confirmPassword,
     };
+     // Validate all form fields
+  const errors = {
+    username: validate_username(formData.username),
+    email: validate_email(formData.email), 
+    password: validate_password(formData.password),
+    // confirmPassword: validate_confirm_password(formData.password, formData.confirmPassword),
+    name: validate_name(formData.name),
+    gender: validate_gender(formData.gender),
+    phoneNumber: validate_phone_number(formData.phoneNumber),
+    dateOfBirth: validate_date_of_birth(formData.dateOfBirth),
+    country: validate_country(formData.country),
+    state: validate_state(formData.state),
+    city: validate_city(formData.city),
+  };
+
+  // Check if any validation failed
+  const hasErrors = Object.values(errors).some(error => error !== null);
+
+  if (hasErrors) {
+    // Set error messages in state (or display them as needed)
+    setErrorMessage(errors);
+    return; // Stop form submission if there are errors
+  }
     try {
       // Call the API function to submit the form
       const response = await ApiCall(formData);
@@ -72,6 +129,7 @@ const Signup = () => {
                           Username
                         </label>
                       </div>
+                      {errors.username && <p className="error">{errors.username}</p>}
                     </div>
 
                     <div className="col-12">
@@ -89,7 +147,9 @@ const Signup = () => {
                         <label htmlFor="email" className="form-label">
                           Email
                         </label>
+                        {errors.email && <p className="error">{errors.email}</p>}
                       </div>
+                      {errors.email && <p className="error">{errors.email}</p>}
                     </div>
 
                     <div className="col-12">
@@ -125,6 +185,7 @@ const Signup = () => {
                           Name
                         </label>
                       </div>
+                      {errors.name && <p className="error">{errors.name}</p>}
                     </div>
 
                     <div className="col-12">
@@ -146,6 +207,7 @@ const Signup = () => {
                           Gender
                         </label>
                       </div>
+                      {errors.gender && <p className="error">{errors.gender}</p>}
                     </div>
 
                     <div className="col-12">
@@ -164,6 +226,7 @@ const Signup = () => {
                           Phone Number
                         </label>
                       </div>
+                      {errors.phoneNumber && <p className="error">{errors.phoneNumber}</p>}
                     </div>
 
                     <div className="col-12">
@@ -236,6 +299,7 @@ const Signup = () => {
                           Password
                         </label>
                       </div>
+                      {errors.password && <p className="error">{errors.password}</p>}
                     </div>
 
                     <div className="col-12">
@@ -254,6 +318,7 @@ const Signup = () => {
                           Confirm Password
                         </label>
                       </div>
+                      {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
                     </div>
 
                     <div className="col-12">
